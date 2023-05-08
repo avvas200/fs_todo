@@ -34,10 +34,29 @@ const uploads = multer({ storage, fileFilter });
 router.post("/create-user", validateUserSignUp, userValidation, createUser);
 router.post("/sign-in", validateUserSignIn, userValidation, userSignIn);
 router.get("/sign-out", isAuth, signOut);
-router.post("upload-profile", isAuth, uploads.single("profile"), uploadProfile);
+router.post(
+  "/upload-profile",
+  isAuth,
+  uploads.single("profile"),
+  uploadProfile
+);
 // router.post("/create-post", isAuth, (req, res) => {
 //   //create post here
 //   res.send("Welcome, you are in secret route");
 // });
+
+router.get("/profile", isAuth, (req, res) => {
+  if (!req.res) {
+    return res.json({ success: false, message: "Un authorize access" });
+  }
+  res.json({
+    success: true,
+    profile: {
+      fullname: req.res.fullname,
+      email: req.res.email,
+      avatar: req.res.avatar ? req.res.avatar : "",
+    },
+  });
+});
 
 module.exports = router;
